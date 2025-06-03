@@ -2,7 +2,7 @@ import os
 import sys
 
 # Chemin vers le répertoire de votre projet Django
-path = '/home/Joel1Ky/monprojet'
+path = '/home/Joel1Ky/Projet'
 if path not in sys.path:
     sys.path.append(path)
 
