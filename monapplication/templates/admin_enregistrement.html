@@ -1,0 +1,77 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Signaler une Panne</h2>
+    <form method="post" id="panneForm" action="{% url 'signaler_panne' %}">
+        {% csrf_token %}
+
+        <!-- Champ pour matricule -->
+        <div class="mb-3">
+            {{ form.agent_commercial_id.label_tag }}
+            {{ form.agent_commercial_id }}
+        </div>
+
+        <!-- Bloc des infos de l'agent -->
+        <div id="agent-info" class="mt-4" style="display: none;">
+            <h5>Informations de l'Agent Commercial</h5>
+            <p><strong>Nom :</strong> <span id="agent-nom"></span> <span id="agent-prenom"></span></p>
+            <p><strong>Matricule :</strong> <span id="agent-matricule"></span></p>
+            <p><strong>Téléphone :</strong> <span id="agent-telephone"></span></p>
+        </div>
+
+        <!-- Section équipement + description -->
+        <div id="equipment-section" class="mt-4" style="display: none;">
+            <div class="mb-3">
+                {{ form.type_equipement.label_tag }}
+                {{ form.type_equipement }}
+            </div>
+            <div class="mb-3">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-3">Enregistrer</button>
+        </div>
+    </form>
+</div>
+
+<!-- jQuery (si ce n’est pas déjà inclus dans base_generic.html) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#id_agent_commercial_id').on('input', function() {
+        let matricule = $(this).val();
+
+        if (matricule.length >= 3) {
+            $.ajax({
+                url: "{% url 'get_agent_commercial' %}",
+                data: { 'matricule': matricule },
+                success: function(data) {
+                    if (data.success) {
+                        $('#agent-info').show();
+                        $('#equipment-section').show();
+
+                        $('#agent-nom').text(data.nom);
+                        $('#agent-prenom').text(data.prenom);
+                        $('#agent-matricule').text(data.matricule);
+                        $('#agent-telephone').text(data.telephone);
+                    } else {
+                        $('#agent-info').hide();
+                        $('#equipment-section').hide();
+                    }
+                },
+                error: function() {
+                    $('#agent-info').hide();
+                    $('#equipment-section').hide();
+                }
+            });
+        } else {
+            $('#agent-info').hide();
+            $('#equipment-section').hide();
+        }
+    });
+});
+</script>
+{% endblock %}

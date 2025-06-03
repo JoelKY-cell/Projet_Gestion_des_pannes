@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail de la panne</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+    <style>
+        .container {
+            max-width: 700px;
+            margin-top: 40px;
+        }
+
+        .card {
+            border-radius: 15px;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            margin-top: 40px;
+        }
+
+        .maintenancier {
+            text-align: right;
+        }
+
+        #qrcode {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Section à imprimer -->
+        <div id="print-section">
+            <div class="card shadow">
+                <div class="card-header text-center">
+                    Détails de la panne
+                </div>
+                <div class="card-body">
+                    <p><strong>Agent commercial :</strong> {{ panne.agent_commercial.nom }} {{ panne.agent_commercial.prenom }}</p>
+                    <p><strong>Matricule :</strong> {{ panne.agent_commercial.matricule }}</p>
+                    <p><strong>Téléphone :</strong> {{ panne.agent_commercial.telephone }}</p>
+                    <p><strong>Équipement :</strong> {{ panne.type_equipement }}</p>
+                    <p><strong>Description :</strong> {{ panne.description }}</p>
+                    <p><strong>Date de signalisation :</strong> {{ panne.date_signalisation|date:"d/m/Y H:i" }}</p>
+                    <p><strong>État :</strong> 
+                        {% if panne.etat == 'resolue' %}
+                            <span class="badge bg-success">Résolue</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">En attente</span>
+                        {% endif %}
+                    </p>
+
+                    <div class="footer-section">
+                        <div id="qrcode"></div>
+                        <div class="maintenancier">
+                            <strong>Maintenancier</strong><br>
+                            {{ panne.maintenancier.get_full_name }} {{ panne.maintenancier.prenom }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons -->
+        <a href="{% url 'liste_enregistrement' %}" class="btn btn-secondary mt-4">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+
+        <button class="btn btn-primary mt-4 ms-2" onclick="printSection()">
+            <i class="fas fa-print"></i> Imprimer le reçu
+        </button>
+    </div>
+
+    <!-- Toasts -->
+    {% if messages %}
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            {% for message in messages %}
+                <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 show mb-2" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">{{ message }}</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        // Génère le QR code pointant vers l'URL actuelle
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentUrl = window.location.href;
+            new QRCode(document.getElementById("qrcode"), {
+                text: currentUrl,
+                width: 100,
+                height: 100
+            });
+
+            // Affichage des toasts
+            const toastList = [].slice.call(document.querySelectorAll('.toast'));
+            toastList.map(toast => new bootstrap.Toast(toast).show());
+        });
+
+        // Fonction d'impression
+        function printSection() {
+            const content = document.getElementById("print-section").innerHTML;
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Reçu de traitement</title>
+                        <style>
+                            .card { border: 1px solid #ccc; border-radius: 10px; padding: 20px; }
+                            .card-header { background-color: #007bff; color: white; font-weight: bold; padding: 10px; text-align: center; }
+                            .badge { padding: 0.5em 0.8em; border-radius: 5px; }
+                            .bg-success { background-color: #28a745; color: white; }
+                            .bg-warning { background-color: #ffc107; color: black; }
+                            .maintenancier { text-align: right; margin-top: 30px; }
+                            .footer-section { display: flex; justify-content: space-between; margin-top: 40px; }
+                            #qrcode {  width: 100px; height: 100px;}
+                        </style>
+                    </head>
+                    <body onload="window.print(); window.close();">
+                        ${content}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier l'Enregistrement</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        /* Sidebar */
+        .sidebar {
+            height: 100%;
+            width: 240px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #007bff;
+            padding-top: 20px;
+            padding-left: 10px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar a {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+            border-radius: 5px;
+        }
+
+        .sidebar i {
+            margin-right: 10px;
+        }
+
+        /* Contenu principal */
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        .form-control {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        /* Bouton de soumission */
+        .btn-submit {
+            width: 50%;
+            margin: 20px auto;
+            display: block;
+            background-color: #007bff;
+        }
+
+        /* Footer */
+        .bfooter {
+            background: linear-gradient(to right, #007bff, #ffffff);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        .footer {
+            background: linear-gradient(to right, red, #ffffff);
+            color: white;
+            padding: 10px 0;
+            font-size: 13px;
+            border-top: 1px solid #444;
+            text-align: center;
+        }
+        .logo-footer {
+            padding: 10px;
+            text-align: center;
+        }
+        .logo-footer img {
+            max-width: 100%; /* Ajustez la taille selon vos besoins */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> Accueil</a>
+            <a href="{% url 'signaler_panne' %}"><i class="fas fa-pencil-alt"></i> Enregistrer une panne</a>
+            <a href="{% url 'liste_enregistrement' %}"><i class="fas fa-list"></i> Liste des Pannes</a>
+            <a href="{% url 'analyse_pannes' %}"><i class="fas fa-chart-line"></i>Analyse des pannes</a>
+            <a href="{% url 'agents' %}"><i class="bi bi-graph-up"></i>Analyse des agents</a>
+            <a href="{% url 'activity_log' %}"><i class="fas fa-history"></i>Historique des activités </a>
+            <a href="{% url 'mon_compte' %}"><i class="fas fa-user-circle"></i> Mon profil</a>
+            <a href="{% url 'index' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+        </div>
+        <!-- Logo en pied de page -->
+        <div class="logo-footer">
+            <img src="{% static 'images/index.jpeg' %}" class="d-block w-100" alt="Logo">
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="content">
+        <div class="container mt-5">
+            <h1 style="text-align: center;">Modifier l'Enregistrement</h1>
+
+            <form method="POST" style="text-align: center;">
+                {% csrf_token %}
+                {{ form.as_p }}  <!-- Affiche le formulaire avec tous les champs -->
+                <button type="submit" class="btn btn-primary btn-submit">Modifier</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bfooter">
+        <div class="container">
+            <div class="region region-bfooter">
+                <section id="block-contact" class="block block-block-content clearfix">
+                    <h2 class="block-title">Contact</h2>
+                    <div class="field--item">
+                        <p>01 BP 624 Bobo 1171 avenue de la nation Bobo<br/>
+                        +(226) 64 99 34 41 ou 73 71 56 56<br/>
+                        Fax: +226 20 97 27 29 <br/>
+                        Email: <a href="mailto:joelkyras3@gmail.com">joelkyras3@gmail.com</a></p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

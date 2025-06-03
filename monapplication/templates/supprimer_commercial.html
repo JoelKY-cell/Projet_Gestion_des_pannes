@@ -1,0 +1,12 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h1 style="text-align: center; margin-bottom: 150px;">Supprimer l'Agent Commercial   " {{ agent.nom }} {{ agent.prenom }} "</h1>
+<p style="text-align: center; margin-bottom: 50px;">Êtes-vous sûr de vouloir supprimer cet agent ? Cette action est irréversible.</p>
+
+<form method="post" action="{% url 'supprimer_commercial' agent.pk %}" style="text-align: center;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+    <a href="{% url 'agent_liste' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+
+    <title>Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Material Design Icons & Bootstrap -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"rel="stylesheet" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+      <!-- Bootstrap et autres ressources -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+
+        :root {
+
+            --primary: #4e73df;
+
+            --secondary: #858796;
+
+            --success: #1cc88a;
+
+            --info: #36b9cc;
+
+            --warning: #f6c23e;
+
+            --danger: #e74a3b;
+
+            --light: #f8f9fc;
+
+            --dark: #5a5c69;
+
+        }
+
+        
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: 'Nunito', sans-serif;
+
+        }
+
+        
+
+        body {
+
+            background-color: #f8f9fc;
+
+            display: flex;
+
+            min-height: 100vh;
+
+        }
+
+        
+
+        /* Sidebar */
+
+        .sidebar {
+
+            width: 250px;
+
+            background: linear-gradient(180deg, var(--primary) 0%,rgb(212, 230, 107) 100%);
+
+            color: white;
+
+            transition: all 0.3s;
+
+            position: fixed;
+            
+            height: 100vh;
+            
+
+            z-index: 100;
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-between;
+            
+
+        }
+
+        
+
+        .sidebar-header {
+
+            padding: 1.5rem;
+
+            text-align: center;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        }
+
+        
+
+        .sidebar-menu {
+
+            padding: 1rem 0;
+
+        }
+
+        
+
+        .sidebar-menu li {
+
+            list-style: none;
+
+            padding: 0.75rem 1.5rem;
+
+            transition: all 0.3s;
+
+        }
+
+        
+
+        .sidebar-menu li:hover {
+
+            background-color: rgba(255, 255, 255, 0.1);
+
+        }
+
+        
+
+        .sidebar-menu li a {
+
+            color: rgba(255, 255, 255, 0.8);
+
+            text-decoration: none;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+        
+
+        .sidebar-menu li a i {
+
+            margin-right: 10px;
+
+            font-size: 1.1rem;
+
+        }
+
+        
+
+        .sidebar-menu li.active {
+
+            background-color: rgba(255, 255, 255, 0.2);
+
+        }
+
+        
+
+        .sidebar-menu li.active a {
+
+            color: white;
+
+        }
+
+        
+
+        /* Main Content */
+
+        .main-content {
+
+            flex: 1;
+
+            margin-left: 250px;
+
+            transition: all 0.3s;
+
+        }
+
+        
+
+        /* Top Navigation */
+
+        .top-nav {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 1rem 1.5rem;
+
+            background-color: white;
+
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+
+        }
+
+        
+
+        .search-bar {
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+        
+
+        .search-bar input {
+
+            border: none;
+
+            background-color: var(--light);
+
+            padding: 0.5rem 1rem;
+
+            border-radius: 20px;
+
+            outline: none;
+
+        }
+
+        
+
+        .user-menu {
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+        
+
+        .user-menu img {
+
+            width: 40px;
+
+            height: 40px;
+
+            border-radius: 50%;
+
+            margin-right: 10px;
+
+        }
+
+        
+
+        .user-menu .dropdown {
+
+            position: relative;
+
+        }
+
+        
+
+        .user-menu .dropdown-content {
+
+            display: none;
+
+            position: absolute;
+
+            right: 0;
+
+            background-color: white;
+
+            min-width: 160px;
+
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+
+            z-index: 1;
+
+            border-radius: 5px;
+
+        }
+
+        
+
+        .user-menu .dropdown:hover .dropdown-content {
+
+            display: block;
+
+        }
+
+        
+
+        .dropdown-content a {
+
+            color: var(--dark);
+
+            padding: 12px 16px;
+
+            text-decoration: none;
+
+            display: block;
+
+        }
+
+        
+
+        .dropdown-content a:hover {
+
+            background-color: var(--light);
+
+        }
+
+        
+
+        /* Dashboard Content */
+
+        .dashboard-content {
+
+            padding: 1.5rem;
+
+        }
+
+        
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 1.5rem;
+
+        }
+
+        
+
+        .page-header h1 {
+
+            font-size: 1.75rem;
+
+            color: var(--dark);
+
+        }
+
+        
+
+        .breadcrumb {
+
+            display: flex;
+
+            list-style: none;
+
+        }
+
+        
+
+        .breadcrumb li {
+
+            margin-right: 0.5rem;
+
+        }
+
+        
+
+        .breadcrumb li:after {
+
+            content: '/';
+
+            margin-left: 0.5rem;
+
+            color: var(--secondary);
+
+        }
+
+        
+
+        .breadcrumb li:last-child:after {
+
+            content: '';
+
+        }
+
+        
+
+        .breadcrumb a {
+
+            color: var(--secondary);
+
+            text-decoration: none;
+
+        }
+
+        
+
+        .breadcrumb a:hover {
+
+            color: var(--primary);
+
+        }
+
+        
+
+        /* Cards */
+
+        .cards {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 1.5rem;
+
+            margin-bottom: 1.5rem;
+
+        }
+
+        
+
+        .card {
+
+            background-color: white;
+
+            border-radius: 0.35rem;
+
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+
+            overflow: hidden;
+
+        }
+
+        
+
+        .card-header {
+
+            padding: 1rem 1.25rem;
+
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+            font-weight: bold;
+
+            color: var(--dark);
+
+        }
+
+        
+
+        .card-body {
+
+            padding: 1.25rem;
+
+        }
+
+        
+
+        .stat-card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            min-height: 130px;
+            padding: 0.75rem 1rem;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            
+            height: 40px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-right: 1rem;
+
+            font-size: 1.5rem;
+
+            color: white;
+
+        }
+
+        
+
+        .stat-icon.primary {
+
+            background-color: var(--primary);
+
+        }
+
+        
+
+        .stat-icon.success {
+
+            background-color: var(--success);
+
+        }
+
+        
+
+        .stat-icon.warning {
+
+            background-color: var(--warning);
+
+        }
+
+        
+
+        .stat-icon.danger {
+
+            background-color: var(--danger);
+
+        }
+
+        
+
+        .stat-text h3 {
+
+            font-size: 1.5rem;
+
+            margin-bottom: 0.25rem;
+
+            color: var(--dark);
+
+        }
+
+        
+
+        .stat-text p {
+
+            color: var(--secondary);
+
+            font-size: 0.875rem;
+
+        }
+
+        
+
+        /* Charts */
+
+        .chart-container {
+
+            background-color: white;
+
+            border-radius: 0.35rem;
+
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+
+            margin-bottom: 1.5rem;
+
+            overflow: hidden;
+
+        }
+
+        
+
+        .chart-header {
+
+            padding: 1rem 1.25rem;
+
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+            font-weight: bold;
+
+            color: var(--dark);
+
+        }
+
+        
+
+        .chart-body {
+
+            padding: 1.25rem;
+
+            height: 300px;
+
+        }
+
+        
+
+        /* Tables */
+
+        .table-container {
+
+            background-color: white;
+
+            border-radius: 0.35rem;
+
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+
+            overflow: hidden;
+
+        }
+
+        
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+        
+
+        th, td {
+
+            padding: 1rem;
+
+            text-align: left;
+
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+        }
+
+        
+
+        th {
+
+            background-color: var(--light);
+
+            color: var(--dark);
+
+            font-weight: bold;
+
+        }
+
+        
+
+        tr:hover {
+
+            background-color: rgba(0, 0, 0, 0.01);
+
+        }
+
+        
+
+        .badge {
+
+            padding: 0.25rem 0.5rem;
+
+            border-radius: 0.25rem;
+
+            font-size: 0.75rem;
+
+            font-weight: bold;
+
+            color: white;
+
+        }
+
+        
+
+        .badge-success {
+
+            background-color: var(--success);
+
+        }
+
+        
+
+        .badge-warning {
+
+            background-color: var(--warning);
+
+        }
+
+        
+
+        .badge-danger {
+
+            background-color: var(--danger);
+
+        }
+
+        
+
+        /* Responsive */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+
+                width: 0;
+
+                overflow: hidden;
+
+            }
+
+            
+
+            .main-content {
+
+                margin-left: 0;
+
+            }
+
+            
+
+            .cards {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+        .logo-footer img {
+            max-width: 90%;
+            height: auto;
+            margin: 10px;
+            
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+
+    <div class="sidebar">
+
+        
+
+        <ul class="sidebar-menu">
+            <div class="sidebar-header">
+
+                <h2>Admin Panel</h2>
+
+            </div>
+
+            <li class="active">
+
+                <a href="{% url 'admin_dashboard' %}"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'agent_liste' %}"><i class="fas fa-fw fa-users"></i> Liste des agents commerciaux</a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'liste_pannes_agences' %}"><i class="fas fa-list"></i>Liste des pannes des agences</a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'planifier_visite' %}"><i class="fas fa-pencil-alt"></i> Planifier une visite de maintenance</a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'liste_visites_admin' %}"><i class="fas fa-tasks"></i> Liste des visites planifiées</a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i> Déconnexion</a>
+
+            </li>
+            
+
+        </ul>
+        <div class="logo-footer">
+                <img src="{% static 'images/index.jpeg' %}" alt="Logo">
+            </div>
+
+    </div>
+
+    <!-- Main Content -->
+
+    <div class="main-content">
+
+        <!-- Top Navigation -->
+
+        <div class="top-nav">
+
+            <div class="search-bar">
+
+              
+
+            </div>
+
+            <div class="user-menu">
+
+                <div class="dropdown">
+
+                    <span>KY <i class="fas fa-caret-down"></i></span>
+
+                    <div class="dropdown-content">
+
+                        <a href="{% url 'mon_compte' %}"><i class="fas fa-fw fa-user"></i> Mon profil</a>
+
+                        <a href="{% url 'logout' %}"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Dashboard Content -->
+
+        <div class="dashboard-content">
+
+            
+
+            <!-- Stats Cards -->
+
+            <div class="cards">
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon primary">
+
+                        <i class="fas fa-fw fa-cog"></i>
+
+                    </div>
+                    <div class="stat-text">
+
+                        <h3 class="fw-bold counter" data-target="{{ total_pannes }}">0</h3>
+
+                        <p>Total des pannes</p>
+
+                    </div>
+                </div>
+
+         
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon warning">
+
+                         <i class="fas fa-check-circle me-2"></i>
+
+                    </div>
+
+                    <div class="stat-text">
+
+                        <h3 class="fw-bold counter" data-target="{{ total_pannes_resolues }}">0</h3>
+
+                        <p>Pannes résolues</p>
+
+                    </div>
+
+                </div>
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon danger">
+
+                        <i class="fas fa-hourglass-half me-2"></i>
+
+                    </div>
+
+                    <div class="stat-text">
+
+                        <h3 class="fw-bold counter" data-target="{{ total_pannes_en_attente }}">0</h3>
+
+                        <p>Pannes en attente</p>
+
+                    </div>
+
+                </div>
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon success">
+
+                        <i class="fas fa-user-tie"></i>
+
+                    </div>
+
+                    <div class="stat-text">
+
+                        <h3 class="fw-bold counter" data-target="{{ total_maintenanciers }}">0</h3>
+
+                        <p>Total des maintenanciers</p>
+
+                    </div>
+                </div>
+
+                
+
+                <div class="card stat-card">
+
+                    <div class="stat-icon success">
+
+                        <i class="fas fa-building"></i>
+
+                    </div>
+
+                    <div class="stat-text">
+
+                        <h3 class="fw-bold counter" data-target="{{ total_agences }}">0</h3>
+
+                        <p>Total des agences</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Charts -->
+
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                <div class="chart-container" style="flex: 1;">
+                    <div class="chart-header">
+                        <h3>Statistiques des pannes</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="panneChart" width="400" height="100"></canvas>
+                    </div>
+                </div>
+
+        <div class="chart-container" >
+            <div class="chart-header">
+                <h3>Répartition des pannes par agent</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="pannePieChart" ></canvas>
+            </div>
+        </div>
+    </div>
+    
+            
+            
+
+            <div class="cards">
+                        <!-- Gestion des entités -->
+                        <div class="card shadow mb-5">
+                            <div class="card-header fw-bold bg-white">Gestion des pannes</div>
+                            <div class="card-body">
+                                <a href="{% url 'admin_enregistrement' %}" class="btn btn-primary mb-3">Ajouter une panne</a>
+                                <a href="{% url 'panne_list' %}" class="btn btn-primary mb-3">Liste des pannes</a>
+                            </div>
+                        </div>
+
+                        <div class="card shadow mb-5">
+                            <div class="card-header fw-bold bg-white">Gestion des agents</div>
+                            <div class="card-body">
+                                <a href="{% url 'ajouter_commercial' %}" class="btn btn-primary mb-3">Ajouter un agent</a>
+                                <a href="{% url 'agent_liste' %}" class="btn btn-primary mb-3">Liste des agents</a>
+                            </div>
+                        </div>
+
+                        <div class="card shadow mb-5">
+                            <div class="card-header fw-bold bg-white">Gestion des maintenanciers</div>
+                            <div class="card-body">
+                                <a href="{% url 'ajouter_maintenancier' %}" class="btn btn-primary mb-3">Ajouter un maintenancier</a>
+                                <a href="{% url 'liste_maintenanciers' %}" class="btn btn-primary mb-3">Liste des maintenanciers</a>
+                            </div>
+                        </div>
+
+                        <div class="card shadow mb-5">
+                            <div class="card-header fw-bold bg-white">Gestion des agences</div>
+                            <div class="card-body">
+                                <a href="{% url 'ajouter_agence' %}" class="btn btn-primary mb-3">Ajouter une agence</a>
+                                <a href="{% url 'liste_agences' %}" class="btn btn-primary mb-3">Liste des agences</a>
+                            </div>
+                        </div>
+
+                        <div class="card shadow mb-5">
+                            <div class="card-header fw-bold bg-white">Gestion des responsables d’agence</div>
+                            <div class="card-body">
+                                <a href="{% url 'ajouter_responsable' %}" class="btn btn-primary mb-3">Ajouter un responsable</a>
+                                <a href="{% url 'liste_responsables' %}" class="btn btn-primary mb-3">Liste des responsables</a>
+                            </div>
+                        </div>
+
+            </div>
+
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+        var ctx = document.getElementById('panneChart').getContext('2d');
+        var panneChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Nombre de Pannes par Type d\'Équipement',
+                    data: {{ data|safe }},
+                    data: {{ data|safe }},
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        var ctxPie = document.getElementById('pannePieChart').getContext('2d');
+        var pannePieChart = new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: {{ agent_labels|safe }},
+                datasets: [{
+                    label: 'Répartition des pannes',
+                    data: {{ agent_data|safe }},
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '50%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+       
+       
+    </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const counters = document.querySelectorAll('.counter');
+    counters.forEach(counter => {
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        let count = +counter.innerText;
+        const increment = target / 100;
+        if (count < target) {
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(updateCount, 20);
+        } else {
+          counter.innerText = target;
+        }
+      };
+      updateCount();
+    });
+  });
+</script>
+
+</body>
+</html> 
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

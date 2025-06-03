@@ -1,0 +1,133 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .form-container {
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <div class="container">
+        <h1>Ajouter un Agent Commercial</h1>
+        <div class="form-container mx-auto" style="max-width: 700px;">
+            <form method="post" id="agentForm" action="{% url 'ajouter_commercial' %}">
+                {% csrf_token %}
+
+                <!-- Affiche la checkbox gerant_de_club séparément -->
+                <div class="form-check mb-3">
+                    {{ form.gerant_de_club }}
+                    <label for="{{ form.gerant_de_club.id_for_label }}" class="form-check-label">Gérant de club</label>
+                    {% if form.gerant_de_club.errors %}
+                        <div class="text-danger">{{ form.gerant_de_club.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Champ gerant (select) à afficher ou cacher -->
+                <div class="mb-3" id="gerant_field">
+                    <label for="{{ form.gerant.id_for_label }}" class="form-label">Choisir le gérant</label>
+                    {{ form.gerant }}
+                    {% if form.gerant.errors %}
+                        <div class="text-danger">{{ form.gerant.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <!-- Affiche les autres champs (nom, prenom, matricule, telephone) -->
+                <div class="mb-3">
+                    <label for="{{ form.nom.id_for_label }}" class="form-label">Nom</label>
+                    {{ form.nom }}
+                    {% if form.nom.errors %}
+                        <div class="text-danger">{{ form.nom.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.prenom.id_for_label }}" class="form-label">Prénom</label>
+                    {{ form.prenom }}
+                    {% if form.prenom.errors %}
+                        <div class="text-danger">{{ form.prenom.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.matricule.id_for_label }}" class="form-label">Matricule</label>
+                    {{ form.matricule }}
+                    {% if form.matricule.errors %}
+                        <div class="text-danger">{{ form.matricule.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.telephone.id_for_label }}" class="form-label">Téléphone</label>
+                    {{ form.telephone }}
+                    {% if form.telephone.errors %}
+                        <div class="text-danger">{{ form.telephone.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">Agent ajouté avec succès !</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+
+    <div id="alertToast" class="toast align-items-center text-bg-danger border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">Une erreur est survenue.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour afficher ou cacher le champ "gerant"
+        function toggleGerantField() {
+            const checkbox = document.getElementById('{{ form.gerant_de_club.id_for_label }}');
+            const gerantField = document.getElementById('gerant_field');
+            const gerantSelect = document.getElementById('{{ form.gerant.id_for_label }}');
+
+            if (checkbox.checked) {
+                gerantField.style.display = 'none';
+                gerantSelect.value = '';  // Vide la sélection si gérant de club
+            } else {
+                gerantField.style.display = 'block';
+            }
+        }
+
+        // Gestion du formulaire en AJAX avec feedback toast
+        document.querySelector('#agentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = this;
+            var formData = new FormData(form);
+
+            fetch(form.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.json())
+            .then(data => {
+                var toast = new bootstrap.Toast(data.success ? document.getElementById('successToast') : document.getElementById('alertToast'));
+                toast.show();
+                if (data.success) form.reset();
+                toggleGerantField();  // Remet à jour l'affichage du champ après reset
+            })
+            .catch(() => new bootstrap.Toast(document.getElementById('alertToast')).show());
+        });
+
+        // Événement pour toggle en temps réel
+        document.getElementById('{{ form.gerant_de_club.id_for_label }}').addEventListener('change', toggleGerantField);
+
+        // Au chargement, afficher/cacher le champ gerant selon l'état de la checkbox
+        window.addEventListener('load', toggleGerantField);
+    </script>
+{% endblock %}

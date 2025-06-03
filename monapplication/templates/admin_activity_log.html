@@ -1,0 +1,35 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1 class="my-4 text-center">Historique des actions</h1>
+  <div class="container">
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Date et Heure</th>
+          <th>Utilisateur</th>
+          <th>Action</th>
+          <th>Modèle</th>
+          <th>ID de l'objet</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+          <tr>
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.user.username }}</td>
+            <td>{{ log.action }}</td>
+            <td>{{ log.model_name }}</td>
+            <td>{{ log.object_id }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <style>
+    .table-hover tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+    .container {
+        margin-top: 50px;
+        text-align: center;
+    }
+    .form-container {
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div class="container">
+    <h1>Modifier une Agence</h1>
+    <div class="form-container mx-auto" style="max-width: 700px;">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success w-100 mt-3">Mettre à jour</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Liste des Responsables d’Agence</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for responsable in responsables %}
+                    <tr>
+                        <td>{{ responsable.user.last_name }}</td>
+                        <td>{{ responsable.user.first_name }}</td>
+                        <td>{{ responsable.user.email }}</td>
+                        <td>{{ responsable.telephone }}</td>
+                        <td>
+                            <a href="{% url 'modifier_responsable_agence' responsable.pk %}" class="btn btn-sm btn-warning">Modifier</a>
+                            <a href="{% url 'supprimer_responsable_agence' responsable.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Aucun responsable d'agence enregistré.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

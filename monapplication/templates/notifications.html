@@ -1,0 +1,28 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Notifications des pannes d’agence résolues</h2>
+
+    {% if pannes_resolues %}
+        <div class="list-group">
+            {% for panne in pannes_resolues %}
+                <div class="list-group-item list-group-item-action mb-2 shadow-sm">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1 text-success">
+                            Panne résolue - {{ panne.agence.nom }}
+                        </h5>
+                        <small class="text-muted">{{ panne.date_resolution|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">{{ panne.description }}</p>
+                    <small>Signalée par : {{ panne.signalee_par.get_full_name }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            Aucune nouvelle panne d’agence résolue.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

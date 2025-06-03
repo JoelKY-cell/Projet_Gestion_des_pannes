@@ -1,0 +1,36 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Liste des Agences</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nom</th>
+                    <th>Adresse</th>
+                    <th>Responsable</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agence in agences %}
+                    <tr>
+                        <td>{{ agence.nom }}</td>
+                        <td>{{ agence.adresse }}</td>
+                        <td>{{ agence.responsable }}</td>
+                        <td>
+                            <a href="{% url 'modifier_agence' agence.pk %}" class="btn btn-sm btn-warning">Modifier</a>
+                            <a href="{% url 'supprimer_agence' agence.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Confirmer la suppression ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Aucune agence enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

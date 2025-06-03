@@ -1,0 +1,19 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Affecter des maintenanciers à la panne : {{ panne.titre }}</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="agents">Sélectionner les maintenanciers :</label>
+            <select name="agents" id="agents" class="form-control" multiple required>
+                {% for agent in agents %}
+                <option value="{{ agent.id }}">{{ agent.user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Affecter</button>
+    </form>
+</div>
+{% endblock %}

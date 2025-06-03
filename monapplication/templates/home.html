@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Pannes</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Animation pour faire défiler le texte de droite à gauche */
+        .marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee-animation 10s linear infinite;
+        }
+
+        @keyframes marquee-animation {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Les autres styles restent inchangés */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: #007bff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .navbar a {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #0056b3;
+        }
+
+        .dropdown {
+            float: right;
+            margin-right: 500px;
+        }
+
+        .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 20px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Section des icônes */
+        .main-content {
+            margin-top: 80px;
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1; /* Permet au contenu principal de prendre tout l'espace restant */
+        }
+
+        .icon-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px;
+        }
+
+        .icon-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-container i {
+            font-size: 90px;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .icon-container p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .bottom-row {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        /* Pied de page */
+        .bfooter {
+            background: linear-gradient(to right, #007bff, #ffffff);
+            color: #fff;
+            padding: 5px 0;  /* Taille réduite du pied de page */
+            text-align: center;
+            margin-top: auto; /* Assure que le pied de page soit collé en bas */
+        }
+
+        .bfooter .block-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .bfooter .block-content {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .bfooter a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .bfooter a:hover {
+            color: #0056b3;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            font-size: 25px;
+            color: #fff;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+            color: #007bff;
+        }
+
+        .bckgfooter {
+            background-color: #0056b3;
+        }
+
+        footer .container {
+            padding: 10px 0;
+            text-align: center;
+            font-size: 12px;
+            
+            
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+    
+        <div class="dropdown" >
+            <button class="dropbtn"><i class="fas fa-user-circle"></i> Compte <!-- Icône de profil -->
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="{% url 'mon_compte' %}" >Mon profil</a>
+                <a href="{% url 'login' %}" >Déconnexion</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu principal avec les icônes -->
+    <div class="main-content">
+        <h1 class="marquee">Bienvenue à la plateforme de gestion des pannes</h1>
+        <p>Gérez, analysez et surveillez toutes les pannes signalées.</p>
+        
+        <div class="icon-section">
+            <div class="top-row">
+                <a href="{% url 'mon_compte' %}" class="icon-container">
+                    <i class="fas fa-user-circle"></i> 
+                    <p>Mon profil</p>
+                </a>
+                
+                <a href="{% url 'liste_enregistrement' %}" class="icon-container">
+                    <i class="fas fa-list"></i>
+                    <p>Liste des Pannes</p>
+                </a>
+                <a href="{% url 'signaler_panne' %}" class="icon-container">
+                    <!-- Nouvelle icône "pencil-square" (crayon dans un carré) -->
+                    <i class="fas fa-pencil-square"></i>
+                    <p>Enregistrer une panne</p>
+                </a>
+            </div>
+
+            <div class="bottom-row">
+                <a href="{% url 'analyse_pannes' %}" class="icon-container">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Analyse des Pannes</p>
+                </a>
+                <a href="{% url 'agents' %}" class="icon-container">
+                    <i class="fas fa-users"></i>
+                    <p>Analyse des Agents</p>
+                </a>
+                <a href="{% url 'mes_pannes_assignees' %}" class="icon-container">
+                    <i class="fas fa-list"></i> 
+                    <p>Les pannes d'agence auquelles je suis assigné</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pied de page -->
+    <div class="bfooter">
+        <div class="block-content">
+            <h2 class="block-title">Contact</h2>
+            <p>Adresse: 41 ou 73 71 56 56<br/>
+            Fax: +226 20 97 27 29<br/>
+            Email: <a href="mailto:joelkyras3@gmail.com">joelkyras3@gmail.com</a></p>
+        </div>
+
+        <div class="block-content">
+            <h2 class="block-title">Nous suivre</h2>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/lonab.bf" target="_blank" style="color: blue;">
+                    <i class="fab fa-facebook-square"></i>
+                </a>
+                <a href="https://twitter.com/lonab_bf" target="_blank"  style="color: blue;">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://wa.me/22664993441" target="_blank" style="color: blue;">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+        <footer class="footer container" role="contentinfo">
+            <div class="region region-footer" >
+                <section id="block-copyright" class="block block-block-content clearfix">
+                    <div class="field field--name-body field--type-text-with-summary field--label-hidden field--item" >
+                        <p>CopyRight © 2024 : LONAB</p>
+                    </div>
+                </section>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

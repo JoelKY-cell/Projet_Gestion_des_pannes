@@ -1,0 +1,38 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Toutes les visites planifiées</h2>
+
+    <div class="text-end mb-3">
+        <a href="{% url 'planifier_visite' %}" class="btn btn-success">Nouvelle visite</a>
+    </div>
+
+    {% if visites %}
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Agence</th>
+                <th>Date</th>
+                <th>Objectif</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visite in visites %}
+            <tr>
+                <td>{{ visite.agence.nom }}</td>
+                <td>{{ visite.date_visite}}</td>
+                <td>{{ visite.objet }}</td>
+                <td>
+                    <a href="{% url 'modifier_visite' visite.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{% url 'supprimer_visite' visite.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="text-center">Aucune visite planifiée.</p>
+    {% endif %}
+</div>
+{% endblock %}

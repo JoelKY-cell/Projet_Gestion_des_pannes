@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer mon compte</title>
+</head>
+<body>
+    <h2>Voulez-vous vraiment supprimer votre compte ?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
+        <a href="{% url 'mon_compte' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</body>
+</html>
