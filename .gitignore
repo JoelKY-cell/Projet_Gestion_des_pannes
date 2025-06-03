@@ -1,33 +1,5 @@
-# 🏗 Fichiers Python compilés
-*.pyc
-__pycache__/
-
-# 🔐 Fichiers sensibles
-db.sqlite3
-.env
-
-# 📂 Environnements virtuels
-venv/
-monenv/
-*.virtualenv
-
-# 🛠 Fichiers statiques et médias
+*.pyc __pycache__/
+db.sqlite3 
+.env 
 /staticfiles/
 media/
-
-# 🚀 Fichiers de logs et temporaires
-*.log
-tmp/
-logs/
-
-# 🎨 Configs d'IDE (VSCode, PyCharm)
-.vscode/
-.idea/
-*.iml
-
-# 📦 NodeJS (si tu ajoutes du JS avec npm)
-node_modules/
-
-# 📁 Migrations non suivies
-monapplication/migrations/
-monprojet/migrations/
