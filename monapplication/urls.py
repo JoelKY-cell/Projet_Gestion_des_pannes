@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from .views import get_agent_commercial
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('', views.index, name='index'),
     path('signaler/', views.signaler_panne, name='signaler_panne'),
     path('liste_enregistrement/', views.liste_enregistrement, name='liste_enregistrement'),
     path('signup/', views.signup, name='signup'),
