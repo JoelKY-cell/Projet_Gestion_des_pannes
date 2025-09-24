@@ -1,19 +1,382 @@
 {% extends 'base_generic.html' %}
+{% load static %}
+
+{% block title %}Affecter des maintenanciers - {{ panne.titre }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h3>Affecter des maintenanciers à la panne : {{ panne.titre }}</h3>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="agents">Sélectionner les maintenanciers :</label>
-            <select name="agents" id="agents" class="form-control" multiple required>
-                {% for agent in agents %}
-                <option value="{{ agent.id }}">{{ agent.user.username }}</option>
-                {% endfor %}
-            </select>
+<div class="container-fluid mt-3">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                        <h4 class="mb-2 mb-md-0">
+                            <i class="fas fa-tools me-2"></i>
+                            Affecter des maintenanciers
+                        </h4>
+                        
+                    </div>
+                </div>
+                
+                <div class="card-body p-3 p-md-4">
+                    <!-- Informations sur la panne -->
+                    <div class="alert alert-info mb-4">
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <h5 class="alert-heading mb-2">{{ panne.titre|truncatechars:50 }}</h5>
+                                <div class="row g-2">
+                                    <div class="col-12 col-sm-6">
+                                        <small><strong>Agence :</strong> {{ panne.agence.nom }}</small>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <small><strong>Date :</strong> {{ panne.date_signalement|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 mt-3 mt-md-0">
+                                <div class="text-center text-md-end">
+                                    <small class="text-muted d-block">Maintenanciers assignés</small>
+                                    <span class="fs-4 fw-bold text-primary">{{ panne.maintenanciers.count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post" id="affectationForm">
+                        {% csrf_token %}
+                        
+                        <!-- Sélection des maintenanciers -->
+                        <div class="form-group mb-4">
+                            <label for="agents" class="form-label fw-bold">
+                                <i class="fas fa-users me-1"></i>
+                                Sélectionner les maintenanciers :
+                            </label>
+                            <!-- Champ de recherche pour mobile -->
+                            <div class="mb-3 d-block d-lg-none">
+                                <input type="text" class="form-control form-control-sm" 
+                                       id="mobileSearch" placeholder="Rechercher un maintenancier...">
+                            </div>
+                            
+                            <select name="agents" id="agents" class="form-select" multiple required 
+                                    size="{% if agents.count <= 5 %}{{ agents.count }}{% else %}5{% endif %}">
+                                {% for agent in agents %}
+                                <option value="{{ agent.id }}" 
+                                        {% if agent in panne.maintenanciers.all %}selected{% endif %}
+                                        data-email="{{ agent.user.email }}"
+                                        data-specialite="{{ agent.specialite|default:'' }}">
+                                    <div class="agent-option">
+                                        <strong>{{ agent.user.get_full_name|default:agent.user.username }}</strong>
+                                        <br class="d-md-none">
+                                        <small class="text-muted">{{ agent.user.email }}</small>
+                                        {% if agent.specialite %}
+                                        <span class="badge bg-secondary ms-1 d-none d-md-inline">({{ agent.specialite }})</span>
+                                        {% endif %}
+                                    </div>
+                                </option>
+                                {% empty %}
+                                <option disabled>Aucun maintenancier disponible</option>
+                                {% endfor %}
+                            </select>
+                            
+                            <!-- Affichage mobile simplifié -->
+                            <div class="d-block d-lg-none mt-3">
+                                <div class="form-text">
+                                    <i class="fas fa-mobile-alt me-1"></i>
+                                    <span id="selectedCount">0</span> maintenancier(s) sélectionné(s)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Maintenanciers déjà assignés -->
+                        {% if panne.maintenanciers.all %}
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="fas fa-user-check me-1"></i>
+                                Maintenanciers déjà assignés :
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2" id="assignedAgents">
+                                {% for agent in panne.maintenanciers.all %}
+                                <span class="badge bg-secondary d-flex align-items-center">
+                                    <span class="d-none d-sm-inline">{{ agent.user.get_full_name|default:agent.user.username }}</span>
+                                    <span class="d-inline d-sm-none">{{ agent.user.username }}</span>
+                                    <i class="fas fa-times ms-2" onclick="deselectAgent({{ agent.id }})" 
+                                       style="cursor:pointer; font-size: 0.8em;"></i>
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex flex-column flex-md-row gap-3">
+                            <div class="d-flex flex-wrap gap-2 flex-grow-1">
+                                <button type="submit" class="btn btn-success flex-fill">
+                                    <i class="fas fa-check me-1"></i>
+                                    <span class="d-none d-md-inline"> Affecter les maintenanciers sélectionnés</span>
+                                    <span class="d-inline d-md-none">Valider</span>
+                                </button>
+                                
+                                <div class="d-flex flex-wrap gap-2 flex-fill">
+                                    <button type="button" class="btn btn-outline-info flex-fill" 
+                                            onclick="selectAllAgents()">
+                                        <i class="fas fa-check-double me-1"></i>
+                                        <span class="d-none d-lg-inline">Tout sélectionner</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning flex-fill" 
+                                            onclick="deselectAllAgents()">
+                                        <i class="fas fa-times me-1"></i>
+                                        <span class="d-none d-lg-inline"> Tout désélectionner</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex flex-wrap gap-2 mt-2 mt-md-0">
+                                <a href="{% url 'liste_pannes_agences' %}" class="btn btn-outline-secondary flex-fill">
+                                    <i class="fas fa-arrow-left me-1"></i>
+                                    Retour
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-success mt-3">Affecter</button>
-    </form>
+    </div>
 </div>
+
+<!-- JavaScript responsive -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const agentsSelect = document.getElementById('agents');
+    const mobileSearch = document.getElementById('mobileSearch');
+    const selectedCount = document.getElementById('selectedCount');
+
+    // Mise à jour du compteur mobile
+    function updateSelectedCount() {
+        if (selectedCount) {
+            selectedCount.textContent = agentsSelect.selectedOptions.length;
+        }
+    }
+
+    // Recherche pour mobile
+    if (mobileSearch) {
+        mobileSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            for (let option of agentsSelect.options) {
+                const text = option.text.toLowerCase();
+                option.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        });
+    }
+
+    // Recherche pour desktop
+    const desktopSearch = document.createElement('input');
+    desktopSearch.type = 'text';
+    desktopSearch.className = 'form-control form-control-sm mb-2 d-none d-lg-block';
+    desktopSearch.placeholder = 'Rechercher un maintenancier...';
+    agentsSelect.parentNode.insertBefore(desktopSearch, agentsSelect);
+
+    desktopSearch.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        for (let option of agentsSelect.options) {
+            const text = option.text.toLowerCase();
+            option.style.display = text.includes(searchTerm) ? '' : 'none';
+        }
+    });
+
+    // Gestion des événements de sélection
+    agentsSelect.addEventListener('change', updateSelectedCount);
+    updateSelectedCount(); // Initialisation
+
+    // Adaptation de la taille du select sur mobile
+    function adjustSelectSize() {
+        if (window.innerWidth < 768) {
+            agentsSelect.size = Math.min(agentsSelect.options.length, 4);
+        } else {
+            agentsSelect.size = Math.min(agentsSelect.options.length, 6);
+        }
+    }
+
+    window.addEventListener('resize', adjustSelectSize);
+    adjustSelectSize();
+});
+
+// Fonctions de sélection
+function selectAllAgents() {
+    const select = document.getElementById('agents');
+    for (let i = 0; i < select.options.length; i++) {
+        select.options[i].selected = true;
+    }
+    updateSelectedCount();
+}
+
+function deselectAllAgents() {
+    const select = document.getElementById('agents');
+    for (let i = 0; i < select.options.length; i++) {
+        select.options[i].selected = false;
+    }
+    updateSelectedCount();
+}
+
+function deselectAgent(agentId) {
+    const select = document.getElementById('agents');
+    for (let i = 0; i < select.options.length; i++) {
+        if (parseInt(select.options[i].value) === agentId) {
+            select.options[i].selected = false;
+            updateSelectedCount();
+            break;
+        }
+    }
+}
+
+function updateSelectedCount() {
+    const selectedCount = document.getElementById('selectedCount');
+    const select = document.getElementById('agents');
+    if (selectedCount && select) {
+        selectedCount.textContent = select.selectedOptions.length;
+    }
+}
+
+// Confirmation avant soumission
+document.getElementById('affectationForm').addEventListener('submit', function(e) {
+    const selectedAgents = document.getElementById('agents').selectedOptions;
+    if (selectedAgents.length === 0) {
+        e.preventDefault();
+        alert('Veuillez sélectionner au moins un maintenancier.');
+        return false;
+    }
+    
+    const message = window.innerWidth < 768 ? 
+        `Affecter ${selectedAgents.length} maintenancier(s) ?` :
+        `Êtes-vous sûr de vouloir affecter ${selectedAgents.length} maintenancier(s) à cette panne ?`;
+    
+    if (!confirm(message)) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// Amélioration tactile pour mobile
+if ('ontouchstart' in window) {
+    document.querySelectorAll('.agent-option').forEach(option => {
+        option.style.padding = '10px';
+        option.style.minHeight = '44px'; // Taille minimale pour le touch
+    });
+}
+</script>
+
+<style>
+/* Styles responsifs */
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.form-select {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-height: 44px; /* Taille tactile minimale */
+}
+
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Adaptation mobile */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-select {
+        font-size: 16px; /* Évite le zoom sur iOS */
+    }
+    
+    .badge {
+        font-size: 0.8em;
+        padding: 0.4em 0.6em;
+    }
+    
+    .alert {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex.flex-wrap {
+        flex-direction: column;
+    }
+    
+    .btn {
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-select {
+        font-size: 14px;
+    }
+    
+    h4 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Améliorations tactiles */
+@media (hover: none) and (pointer: coarse) {
+    .btn, .form-select, .badge {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .btn:hover {
+        transform: none; /* Désactive les effets hover sur mobile */
+    }
+}
+
+/* Options du select améliorées */
+.agent-option {
+    padding: 8px 4px;
+    line-height: 1.4;
+}
+
+/* Animation de chargement */
+.loading {
+    display: none;
+}
+
+.form-submitting .loading {
+    display: inline-block;
+}
+
+.form-submitting .btn-text {
+    display: none;
+}
+</style>
+
+<!-- Indicateur de chargement pour mobile -->
+<div class="d-none" id="loadingIndicator">
+    <div class="text-center py-3">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2 text-muted">Traitement en cours...</p>
+    </div>
+</div>
+
 {% endblock %}

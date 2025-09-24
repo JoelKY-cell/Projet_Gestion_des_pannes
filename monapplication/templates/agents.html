@@ -118,8 +118,7 @@
             <a href="{% url 'signaler_panne' %}"><i class="fas fa-pencil-alt"></i> Enregistrer une panne</a>
             <a href="{% url 'liste_enregistrement' %}"><i class="fas fa-list"></i> Liste des Pannes</a>
             <a href="{% url 'analyse_pannes' %}"><i class="fas fa-chart-line"></i>Analyse des pannes</a>
-            <a href="{% url 'login' %}"><i class="fas fa-user-circle"></i> Mon profil</a>
-            <a href="{% url 'index' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            <a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </div>
         <!-- Logo en pied de page -->
         <div class="logo-footer">
@@ -164,7 +163,8 @@
             <canvas id="AgentChart" width="300" height="100"></canvas>
 
             <script>
-                // Obtenez le contexte du canvas
+                
+               // Obtenez le contexte du canvas
                 var ctx = document.getElementById('AgentChart').getContext('2d');
                 
                 // Créez le graphique
@@ -175,12 +175,27 @@
                         datasets: [{
                             label: 'Nombre de Pannes par Agent',
                             data: {{ data|safe }},  // Les données : nombre de pannes
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',  // Couleur de fond
-                            borderColor: 'rgba(54, 162, 235, 1)',  // Couleur des bordures
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
+                    data: {{ data|safe }},
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
                         responsive: true,  // Rendre le graphique réactif
                         scales: {
                             y: {

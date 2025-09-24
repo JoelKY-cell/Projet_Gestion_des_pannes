@@ -4,19 +4,27 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 .container {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
+
 h1 {
     text-align: center;
     color: blue;
 }
+
 button {
     background-color: #007bff;
     color: white;
@@ -24,7 +32,34 @@ button {
     padding: 10px;
     border-radius: 5px;
     width: 100%;
+    cursor: pointer;
 }
+
 button:hover {
     background-color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
 }

@@ -27,6 +27,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.3s ease;
         }
         .sidebar a {
             color: white;
@@ -47,6 +48,7 @@
         .content {
             margin-left: 260px;
             padding: 20px;
+            transition: margin-left 0.3s ease;
         }
         .logo-footer {
             padding: 10px;
@@ -103,11 +105,39 @@
                 transform: translate(-50%, -50%) scale(0.8);
             }
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 260px;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .content {
+                margin-left: 0;
+            }
+            #sidebarToggle {
+                display: block;
+            }
+        }
+
+        #sidebarToggle {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 110;
+        }
     </style>
 </head>
 <body>
+    <button id="sidebarToggle" class="btn btn-primary d-md-none">
+        <i class="fas fa-bars"></i>
+    </button>
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div>
             <a href="{% url 'home' %}"><i class="fas fa-home"></i> Accueil</a>
             <a href="{% url 'signaler_panne' %}"><i class="fas fa-pencil-alt"></i> Enregistrer une panne</a>
@@ -123,7 +153,7 @@
     </div>
 
     <!-- Contenu principal -->
-    <div class="content">
+    <div class="content" id="content">
         <div class="container mt-4">
             <h1 class="text-center">Historique des Activités</h1>
 
@@ -228,6 +258,21 @@
                     }
                 });
             });
+
+            // Sidebar toggle
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                if (sidebar.classList.contains('active')) {
+                    content.style.marginLeft = '260px';
+                } else {
+                    content.style.marginLeft = '0';
+                }
+            });
         });
     </script>
 </body>
+</html>

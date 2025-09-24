@@ -1135,6 +1135,13 @@ def afficher_notifications(request):
     return render(request, 'notifications.html', {'notifications': notifications})
 
 
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.conf import settings
+from .models import PanneAgence, Agent
+
 @login_required
 @user_passes_test(is_admin)
 def affecter_maintenanciers(request, panne_id):
@@ -1148,21 +1155,29 @@ def affecter_maintenanciers(request, panne_id):
 
         # Envoi d'email aux maintenanciers assignés
         subject = f"Nouvelle panne assignée : {panne.titre}"
-        message = f"Vous avez été assigné à une nouvelle panne.\n\nTitre: {panne.titre}\nDescription: {panne.description}\nAgence: {panne.agence.nom}\nDate de signalement: {panne.date_signalement.strftime('%d/%m/%Y %H:%M')}\n\nVeuillez consulter votre tableau de bord pour plus de détails."
-        from_email = settings.DEFAULT_FROM_EMAIL  # Utilise DEFAULT_FROM_EMAIL dans settings.py
-        maintenancier_email = "kyrock84@gmail.com"
+        message = (
+            f"Vous avez été assigné à une nouvelle panne.\n\n"
+            f"Titre: {panne.titre}\n"
+            f"Description: {panne.description}\n"
+            f"Agence: {panne.agence.nom}\n"
+            f"Date de signalement: {panne.date_signalement.strftime('%d/%m/%Y %H:%M')}\n\n"
+            f"Veuillez consulter votre tableau de bord pour plus de détails."
+        )
+        from_email = settings.DEFAULT_FROM_EMAIL
 
         assigned_agents = Agent.objects.filter(id__in=agents_ids)
         for agent in assigned_agents:
             try:
-                send_mail(subject, message, from_email, [maintenancier_email], fail_silently=False)
+                send_mail(subject, message, from_email, [agent.user.email], fail_silently=False)
             except Exception as e:
                 # Log ou gestion d'erreur si nécessaire
                 pass
 
         messages.success(request, "Maintenancier(s) affecté(s) avec succès.")
-        return redirect('admin_dashboard')
+        return render(request, 'affecter_maintenanciers.html', {'panne': panne, 'agents': agents})
 
+    # POUR LE CAS GET → afficher le formulaire
+    return render(request, 'affecter_maintenanciers.html', {'panne': panne, 'agents': agents})
 
 
 

@@ -116,7 +116,7 @@
             <a href="{% url 'liste_enregistrement' %}"><i class="fas fa-list"></i> Liste des Pannes</a>
             <a href="{% url 'agents' %}"><i class="bi bi-graph-up"></i>Analyse des agents</a>
             <a href="{% url 'mon_compte' %}"><i class="fas fa-user-circle"></i> Mon profil</a>
-            <a href="{% url 'index' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+            <a href="{% url 'login' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
         </div>
 
         <!-- Logo en pied de page -->
@@ -187,8 +187,22 @@
                 datasets: [{
                     label: 'Nombre de Pannes par Type d\'Équipement',
                     data: {{ data|safe }},
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                    ],
                     borderWidth: 1
                 }]
             },

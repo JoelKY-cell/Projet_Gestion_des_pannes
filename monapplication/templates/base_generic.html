@@ -1,492 +1,194 @@
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="fr">
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
-
-    <title>Admin Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Material Design Icons & Bootstrap -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
-    <!-- FontAwesome CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"rel="stylesheet" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-      <!-- Bootstrap et autres ressources -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
     <style>
-
         :root {
-
             --primary: #4e73df;
-
             --secondary: #858796;
-
             --success: #1cc88a;
-
             --info: #36b9cc;
-
             --warning: #f6c23e;
-
             --danger: #e74a3b;
-
             --light: #f8f9fc;
-
             --dark: #5a5c69;
-
         }
-
-        
 
         * {
-
             margin: 0;
-
             padding: 0;
-
             box-sizing: border-box;
-
             font-family: 'Nunito', sans-serif;
-
         }
-
-        
 
         body {
-
             background-color: #f8f9fc;
-
-            display: flex;
-
             min-height: 100vh;
-
+            display: flex;
         }
 
-        
-
-        /* Sidebar */
-
+        /* Sidebar Responsive */
         .sidebar {
-
             width: 250px;
-
-            background: linear-gradient(180deg, var(--primary) 0%,rgb(212, 230, 107) 100%);
-
+            background: linear-gradient(180deg, var(--primary) 0%, rgb(212, 230, 107) 100%);
             color: white;
-
-            transition: all 0.3s;
-
+            transition: all 0.3s ease;
             position: fixed;
-            
             height: 100vh;
-            
-
-            z-index: 100;
-            display: flex; 
+            z-index: 1000;
+            display: flex;
             flex-direction: column;
             justify-content: space-between;
-            
-
+            overflow-y: auto;
         }
-
-        
 
         .sidebar-header {
-
             padding: 1.5rem;
-
             text-align: center;
-
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
         }
-
-        
 
         .sidebar-menu {
-
             padding: 1rem 0;
-
+            flex-grow: 1;
         }
-
-        
 
         .sidebar-menu li {
-
             list-style: none;
-
             padding: 0.75rem 1.5rem;
-
             transition: all 0.3s;
-
         }
-
-        
 
         .sidebar-menu li:hover {
-
             background-color: rgba(255, 255, 255, 0.1);
-
         }
-
-        
 
         .sidebar-menu li a {
-
             color: rgba(255, 255, 255, 0.8);
-
             text-decoration: none;
-
             display: flex;
-
             align-items: center;
-
+            white-space: nowrap;
         }
-
-        
 
         .sidebar-menu li a i {
-
             margin-right: 10px;
-
             font-size: 1.1rem;
-
+            min-width: 20px;
         }
-
-        
 
         .sidebar-menu li.active {
-
             background-color: rgba(255, 255, 255, 0.2);
-
         }
-
-        
 
         .sidebar-menu li.active a {
-
             color: white;
-
         }
 
-        
-
-        /* Main Content */
-
+        /* Main Content Responsive */
         .main-content {
-
             flex: 1;
-
             margin-left: 250px;
-
-            transition: all 0.3s;
-
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        
+        .content-wrapper {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 100%;
+            overflow-x: auto;
+        }
 
         /* Top Navigation */
-
         .top-nav {
-
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
             padding: 1rem 1.5rem;
-
             background-color: white;
-
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-
             position: sticky;
-
             top: 0;
-
-            z-index: 50;
-
+            z-index: 100;
+            flex-wrap: wrap;
         }
-
-        
-
-        .search-bar {
-
-            display: flex;
-
-            align-items: center;
-
-        }
-
-        
-
-        .search-bar input {
-
-            border: none;
-
-            background-color: var(--light);
-
-            padding: 0.5rem 1rem;
-
-            border-radius: 20px;
-
-            outline: none;
-
-        }
-
-        
 
         .user-menu {
-
             display: flex;
-
             align-items: center;
-
         }
-
-        
-
-        .user-menu img {
-
-            width: 40px;
-
-            height: 40px;
-
-            border-radius: 50%;
-
-            margin-right: 10px;
-
-        }
-
-        
 
         .user-menu .dropdown {
-
             position: relative;
-
         }
-
-        
 
         .user-menu .dropdown-content {
-
             display: none;
-
             position: absolute;
-
             right: 0;
-
+            top: 100%;
             background-color: white;
-
             min-width: 160px;
-
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-
             z-index: 1;
-
             border-radius: 5px;
-
         }
-
-        
 
         .user-menu .dropdown:hover .dropdown-content {
-
             display: block;
-
         }
-
-        
 
         .dropdown-content a {
-
             color: var(--dark);
-
             padding: 12px 16px;
-
             text-decoration: none;
-
             display: block;
-
         }
-
-        
 
         .dropdown-content a:hover {
-
             background-color: var(--light);
-
         }
 
-        
-
-        /* Dashboard Content */
-
-        .dashboard-content {
-
-            padding: 1.5rem;
-
+        /* Contenu principal adaptatif */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        
-
-        .page-header {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 1.5rem;
-
-        }
-
-        
-
-        .page-header h1 {
-
-            font-size: 1.75rem;
-
-            color: var(--dark);
-
-        }
-
-        
-
-        .breadcrumb {
-
-            display: flex;
-
-            list-style: none;
-
-        }
-
-        
-
-        .breadcrumb li {
-
-            margin-right: 0.5rem;
-
-        }
-
-        
-
-        .breadcrumb li:after {
-
-            content: '/';
-
-            margin-left: 0.5rem;
-
-            color: var(--secondary);
-
-        }
-
-        
-
-        .breadcrumb li:last-child:after {
-
-            content: '';
-
-        }
-
-        
-
-        .breadcrumb a {
-
-            color: var(--secondary);
-
-            text-decoration: none;
-
-        }
-
-        
-
-        .breadcrumb a:hover {
-
-            color: var(--primary);
-
-        }
-
-        
-
-        /* Cards */
-
+        /* Cartes responsives */
         .cards {
-
             display: grid;
-
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-
             margin-bottom: 1.5rem;
-
         }
-
-        
 
         .card {
-
             background-color: white;
-
             border-radius: 0.35rem;
-
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-
             overflow: hidden;
-
+            margin-bottom: 1rem;
         }
-
-        
-
-        .card-header {
-
-            padding: 1rem 1.25rem;
-
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
-            font-weight: bold;
-
-            color: var(--dark);
-
-        }
-
-        
-
-        .card-body {
-
-            padding: 1.25rem;
-
-        }
-
-        
 
         .stat-card {
             display: flex;
@@ -495,397 +197,318 @@
             min-height: 130px;
             padding: 0.75rem 1rem;
         }
-        
+
         .stat-icon {
             width: 40px;
-            
             height: 40px;
-
             border-radius: 50%;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             margin-right: 1rem;
-
             font-size: 1.5rem;
-
             color: white;
-
         }
 
-        
-
-        .stat-icon.primary {
-
-            background-color: var(--primary);
-
-        }
-
-        
-
-        .stat-icon.success {
-
-            background-color: var(--success);
-
-        }
-
-        
-
-        .stat-icon.warning {
-
-            background-color: var(--warning);
-
-        }
-
-        
-
-        .stat-icon.danger {
-
-            background-color: var(--danger);
-
-        }
-
-        
-
-        .stat-text h3 {
-
-            font-size: 1.5rem;
-
-            margin-bottom: 0.25rem;
-
-            color: var(--dark);
-
-        }
-
-        
-
-        .stat-text p {
-
-            color: var(--secondary);
-
-            font-size: 0.875rem;
-
-        }
-
-        
-
-        /* Charts */
-
-        .chart-container {
-
-            background-color: white;
-
-            border-radius: 0.35rem;
-
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-
+        /* Tableaux responsifs */
+        .table-responsive-container {
+            overflow-x: auto;
             margin-bottom: 1.5rem;
-
-            overflow: hidden;
-
         }
 
-        
-
-        .chart-header {
-
-            padding: 1rem 1.25rem;
-
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
-            font-weight: bold;
-
-            color: var(--dark);
-
+        .table-responsive-container table {
+            min-width: 600px;
         }
 
-        
-
-        .chart-body {
-
-            padding: 1.25rem;
-
-            height: 300px;
-
-        }
-
-        
-
-        /* Tables */
-
-        .table-container {
-
-            background-color: white;
-
-            border-radius: 0.35rem;
-
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-
-            overflow: hidden;
-
-        }
-
-        
-
-        table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-        }
-
-        
-
-        th, td {
-
+        /* Footer logo */
+        .logo-footer {
             padding: 1rem;
-
-            text-align: left;
-
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        
-
-        th {
-
-            background-color: var(--light);
-
-            color: var(--dark);
-
-            font-weight: bold;
-
-        }
-
-        
-
-        tr:hover {
-
-            background-color: rgba(0, 0, 0, 0.01);
-
-        }
-
-        
-
-        .badge {
-
-            padding: 0.25rem 0.5rem;
-
-            border-radius: 0.25rem;
-
-            font-size: 0.75rem;
-
-            font-weight: bold;
-
-            color: white;
-
-        }
-
-        
-
-        .badge-success {
-
-            background-color: var(--success);
-
-        }
-
-        
-
-        .badge-warning {
-
-            background-color: var(--warning);
-
-        }
-
-        
-
-        .badge-danger {
-
-            background-color: var(--danger);
-
-        }
-
-        
-
-        /* Responsive */
-
-        @media (max-width: 768px) {
-
-            .sidebar {
-
-                width: 0;
-
-                overflow: hidden;
-
-            }
-
-            
-
-            .main-content {
-
-                margin-left: 0;
-
-            }
-
-            
-
-            .cards {
-
-                grid-template-columns: 1fr;
-
-            }
-
-        }
         .logo-footer img {
             max-width: 90%;
             height: auto;
-            margin: 10px;
-            
+            max-height: 400px;
+        }
+ 
+        /* Bouton toggle sidebar */
+        #sidebarToggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
         }
 
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                margin-left: 250px;
+            }
+            
+            .content-wrapper {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .cards {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .top-nav {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            #sidebarToggle {
+                display: block;
+            }
+            
+            .content-wrapper {
+                padding: 0.75rem;
+            }
+            
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                min-height: 100px;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .top-nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 0.75rem;
+            }
+            
+            .user-menu {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .content-wrapper {
+                padding: 0.5rem;
+            }
+            
+            .card-body {
+                padding: 1rem;
+            }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+                min-height: auto;
+            }
+            
+            .stat-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Overlay pour mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        /* Améliorations pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: var(--light);
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        /* Badges responsifs */
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            white-space: nowrap;
+        }
+
+        /* Formulaires responsifs */
+        .form-container {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
     </style>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
 
 <body>
+    <!-- Overlay pour mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Bouton toggle sidebar -->
+    <button id="sidebarToggle" class="btn btn-primary">
+        <i class="fas fa-bars"></i>
+    </button>
 
     <!-- Sidebar -->
-
-    <div class="sidebar">
-
-        
-
+    <div class="sidebar" id="sidebar">
         <ul class="sidebar-menu">
             <div class="sidebar-header">
-
                 <h2>Admin Panel</h2>
-
             </div>
-
             <li class="active">
-
                 <a href="{% url 'admin_dashboard' %}"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
-
             </li>
-
             <li>
-
-                <a href="{% url 'agent_liste' %}"><i class="fas fa-fw fa-users"></i> Liste des agents commerciaux</a>
-
-            </li>
-
-            <li>
-
-                <a href="{% url 'liste_pannes_agences' %}"><i class="fas fa-list"></i>Liste des pannes des agences</a>
-
-            </li>
-
-            <li>
-
-                <a href="{% url 'planifier_visite' %}"><i class="fas fa-pencil-alt"></i> Planifier une visite de maintenance</a>
-
-            </li>
-
-            <li>
-
-                <a href="{% url 'liste_visites_admin' %}"><i class="fas fa-tasks"></i> Liste des visites planifiées</a>
-
-            </li>
-
-            <li>
-
-                <a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i> Déconnexion</a>
-
+                <a href="{% url 'agent_liste' %}"><i class="fas fa-fw fa-users"></i> Liste des agents</a>
+                commerciaux
             </li>
             
-
+            
+            <li>
+                <a href="{% url 'liste_pannes_agences' %}"><i class="fas fa-list"></i> Liste des pannes des </a>agences
+            </li>
+            <li>
+                <a href="{% url 'planifier_visite' %}"><i class="fas fa-pencil-alt"></i> Planifier une visite de </a>maintenance
+            </li>
+            <li>
+                <a href="{% url 'liste_visites_admin' %}"><i class="fas fa-tasks"></i> Liste des visites </a>planifiées
+            </li>
+            <li>
+                <a href="{% url 'logout' %}"><i class="material-icons">exit_to_app</i> Déconnexion</a>
+            </li>
         </ul>
         <div class="logo-footer">
-                <img src="{% static 'images/index.jpeg' %}" alt="Logo">
-            </div>
-
+            <img src="{% static 'images/index.jpeg' %}" alt="Logo">
+        </div>
     </div>
 
     <!-- Main Content -->
-
     <div class="main-content">
-
         <!-- Top Navigation -->
-
         <div class="top-nav">
-
             <div class="search-bar">
-
-              
-
+                <!-- Barre de recherche si nécessaire -->
             </div>
-
             <div class="user-menu">
-
-
                 <div class="dropdown">
-
                     <span>KY <i class="fas fa-caret-down"></i></span>
-
                     <div class="dropdown-content">
-
                         <a href="{% url 'mon_compte' %}"><i class="fas fa-fw fa-user"></i> Mon profil</a>
-
                         <a href="{% url 'logout' %}"><i class="fas fa-fw fa-sign-out-alt"></i> Logout</a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- Contenu principal -->
-    <main class="main-content container my-4">
-        {% block content %}{% endblock %}
-    </main>
+        <div class="content-wrapper">
+            <div class="main-container">
+                {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}
+                <!-- Le contenu spécifique à chaque page viendra ici -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.querySelector('.main-content');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            }
+
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // Fermer le sidebar quand on clique sur un lien (mobile)
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Adapter le contenu en fonction de la taille de l'écran
+            function handleResize() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial call
+        });
+    </script>
 </body>
-</html> 
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</html>
